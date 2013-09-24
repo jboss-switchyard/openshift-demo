@@ -1,0 +1,22 @@
+package mortgages
+import org.switchyard.Message
+global Message message
+global java.util.Map globals 
+
+rule "ApproveCredit"
+    when
+        app : Applicant(creditScore >= 600)
+    then
+        System.out.println("Approving credit for " + app.getName());
+        app.setApproved(true);
+        globals.put("Result", app);
+end
+
+rule "DenyCredit"
+    when
+        app : Applicant(creditScore < 600)
+    then
+        System.out.println("Denying credit for " + app.getName());
+        app.setApproved(false);
+        globals.put("Result", app);
+end

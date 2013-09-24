@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ASCII"?>
+<routes xmlns="http://camel.apache.org/schema/spring">
+    <route>
+        <from uri="switchyard://LoanProcessing"/>
+        <log message="Request for LoanProcessing : ${body}"/>
+        <choice>
+            <when>
+                <header>{urn:mortgages:1.0}status = 'gold'</header>
+                <to uri="bean://AutoApproval"/>
+            </when>
+            <otherwise>
+                <filter>
+                    <simple>${body.creditScore} == 0</simple>
+                    <to uri="switchyard://CreditService"/>
+                </filter>
+                <to uri="switchyard://QualificationService"/>
+            </otherwise>
+        </choice>
+        <log message="Result of LoanProcessing : ${body}"/>
+    </route>
+</routes>
